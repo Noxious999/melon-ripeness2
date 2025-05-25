@@ -8,7 +8,6 @@
         "php": "^8.2",
         "ext-fileinfo": "*",
         "ext-imagick": "*",
-        "ext-redis": "*",
         "aws/aws-sdk-php": "*",
         "barryvdh/laravel-dompdf": "^3.1",
         "doctrine/dbal": "^4.2",
