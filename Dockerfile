@@ -5,7 +5,7 @@ FROM php:8.2-fpm AS base
 WORKDIR /var/www
 
 # Install system dependencies
-# Menambahkan build-essential, cmake, dan python3-dev untuk kompilasi paket Python
+# Menambahkan build-essential, cmake, python3-dev, dan library lain untuk kompilasi paket Python (khususnya OpenCV)
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -22,6 +22,15 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
     python3-dev \
+    # Tambahan dependensi untuk OpenCV dan NumPy
+    libjpeg-dev \
+    libtiff-dev \
+    libavcodec-dev \
+    libavformat-dev \
+    libswscale-dev \
+    libatlas-base-dev \
+    gfortran \
+    # libgtk-3-dev \ # Jika masih gagal, coba uncomment ini, tapi mungkin menambah ukuran image
     --no-install-recommends \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -42,6 +51,8 @@ COPY composer.json composer.lock* ./
 
 # Install Composer dependencies (only production)
 # Coba tambahkan --prefer-dist untuk mengurangi penggunaan memori jika memungkinkan
+# PENTING: Jika ini masih gagal karena memori (exit code 137),
+# Anda SANGAT PERLU menambah alokasi memori untuk Docker Engine Anda.
 RUN composer install --no-interaction --optimize-autoloader --no-dev --prefer-dist
 
 # --- Stage 3: Build Python Dependencies ---
@@ -51,6 +62,8 @@ FROM base AS python_deps
 COPY requirements.txt ./
 
 # Install Python dependencies
+# Jika ini gagal dengan exit code 1, periksa log untuk detail error spesifik.
+# Kemungkinan masih ada library sistem yang kurang.
 RUN pip3 install --no-cache-dir -r requirements.txt
 
 # --- Stage 4: Final Application Image ---
