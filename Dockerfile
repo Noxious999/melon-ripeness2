@@ -11,10 +11,10 @@ RUN apk add --no-cache \
     $PHPIZE_DEPS \ # build-base, autoconf, dll.
     libzip-dev \
     libpng-dev \
-    jpeg-dev \
+    libjpeg-dev \
     libwebp-dev \
     freetype-dev \
-    imagemagick-dev \ # Untuk Imagick
+    imagemagick-dev \
     # Untuk Python dan OpenCV (ini bagian yang mungkin rumit di Alpine)
     python3 \
     py3-pip \
