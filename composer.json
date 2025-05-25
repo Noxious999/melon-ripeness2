@@ -11,7 +11,6 @@
         "aws/aws-sdk-php": "*",
         "barryvdh/laravel-dompdf": "^3.1",
         "doctrine/dbal": "^4.2",
-        "dompdf/dompdf": "^3.1",
         "guzzlehttp/guzzle": "^7.2",
         "intervention/image": "^2.3",
         "laravel/framework": "^12.0",

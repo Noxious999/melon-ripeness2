@@ -64,7 +64,7 @@ COPY requirements.txt ./
 # Install Python dependencies
 # Jika ini gagal dengan exit code 1, periksa log untuk detail error spesifik.
 # Kemungkinan masih ada library sistem yang kurang.
-RUN pip3 install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # --- Stage 4: Final Application Image ---
 # Gunakan 'base' sebagai dasar, sehingga tidak perlu install ulang dependensi & ekstensi

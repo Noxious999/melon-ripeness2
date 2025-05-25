@@ -3,8 +3,7 @@
      "type": "module",
      "scripts": {
           "build": "vite build",
-          "dev": "vite",
-          "test:keploy": "jest --coverage --coverageReporters=text --coverageReporters=cobertura --collectCoverageFrom='./**/*.{js,jsx,ts,tsx}'"
+          "dev": "vite"
      },
      "devDependencies": {
           "@jest/globals": "^29.7.0",
