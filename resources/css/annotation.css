@@ -1,0 +1,143 @@
+/* resources/css/annotation.css */
+/* Perombakan Total UI Halaman Anotasi - Update Paginasi & Visibilitas Judul */
+
+/* --- Variabel Warna Kustom --- */
+#annotation-page-container {
+    --ap-primary: #3b82f6; --ap-primary-dark: #2563eb;
+    --ap-danger: #ef4444; --ap-danger-dark: #dc2626;
+    --ap-success: #22c55e; --ap-warning: #facc15;
+    --ap-secondary: #6b7280; --ap-light-gray: #f3f4f6;
+    --ap-medium-gray: #e5e7eb; --ap-dark-gray: #4b5563;
+    --ap-text-primary: #1f2937; --ap-text-light: #ffffff;
+    --ap-text-warning: #a16207;
+    /* **BARU:** Warna background untuk overlay judul */
+    --ap-overlay-bg: rgba(31, 41, 55, 0.75); /* Semi-transparent dark gray */
+}
+
+/* --- Styling Umum & Layout --- */
+#annotation-page-container { padding-top: 1.5rem; padding-bottom: 2rem; background-color: #f9fafb; }
+#annotation-page-container h1 { color: var(--ap-text-primary); font-weight: 700; font-size: 1.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--ap-medium-gray); margin-bottom: 2rem; text-align: center; }
+#annotation-page-container .card { border: 1px solid var(--ap-medium-gray); border-radius: 0.75rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05); background-color: var(--ap-bg-white); overflow: hidden; }
+#annotation-page-container .card-header { background-color: var(--ap-bg-white); border-bottom: 1px solid var(--ap-medium-gray); font-weight: 600; font-size: 1rem; color: var(--ap-text-primary); padding: 0.75rem 1.5rem; }
+#annotation-page-container .card-body { padding: 1.5rem; }
+.hidden { display: none !important; }
+.clickable { cursor: pointer; }
+
+/* --- Kolom Gambar (Kiri) --- */
+#annotation-wrapper { overflow: hidden; max-height: 75vh; border: 1px dashed var(--ap-medium-gray); background-color: var(--ap-bg-white); margin-bottom: 1rem; position: relative; display: flex; justify-content: center; align-items: center; border-radius: 0.5rem; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); }
+#annotation-container { position: relative; display: inline-block; cursor: crosshair; overflow: visible; max-width: none; border: none; transform-origin: top left; transition: transform 0.15s ease-out; }
+#annotation-image { display: block; max-width: 100%; max-height: calc(75vh - 4px); height: auto; user-select: none; -webkit-user-drag: none; visibility: visible; background-color: var(--ap-light-gray); }
+#bbox-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; }
+
+/* **PERUBAHAN:** Styling Judul Overlay Ditingkatkan */
+#image-title-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: flex;
+    background-color: var(--ap-overlay-bg); /* Latar belakang semi-transparan */
+    color: var(--ap-text-light); /* Teks putih agar kontras */
+    padding: 0.6rem 1rem; /* Padding lebih nyaman */
+    font-size: 0.875rem; /* Ukuran font sedikit lebih besar */
+    font-weight: 500;
+    z-index: 5;
+    border-radius: 0.5rem 0.5rem 0 0; /* Rounded corner hanya di atas */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.6); /* Shadow teks agar lebih jelas */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Border bawah tipis */
+    box-sizing: border-box; /* Pastikan padding masuk dalam width */
+}
+#active-image-path { font-family: monospace; }
+
+/* --- Bbox Styling --- */
+.bbox-div { position: absolute; border: 2px solid var(--ap-danger); background-color: rgba(239, 68, 68, 0.1); pointer-events: auto; box-sizing: border-box; transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease; cursor: grab; border-radius: 3px; }
+.bbox-div:active { cursor: grabbing; }
+.bbox-div.drawing { border-style: dashed; border-color: var(--ap-danger); background-color: rgba(239, 68, 68, 0.05); cursor: crosshair; pointer-events: none; }
+.bbox-div.selected { border-color: var(--ap-primary); border-width: 2px; background-color: rgba(59, 130, 246, 0.15); z-index: 10; cursor: grab; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3), 0 1px 2px rgba(0,0,0,0.1); }
+.bbox-div.resizing, .bbox-div.moving { border-color: var(--ap-primary); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.4), 0 2px 4px rgba(0,0,0,0.1); }
+
+/* --- Refinement Handles --- */
+.bbox-handle { position: absolute; width: 10px; height: 10px; background-color: var(--ap-primary); border: 2px solid var(--ap-bg-white); border-radius: 50%; z-index: 11; pointer-events: auto; box-shadow: 0 1px 3px rgba(0,0,0,0.2); transition: transform 0.1s ease; }
+.bbox-handle:hover { transform: scale(1.2); }
+.bbox-div:not(.selected) .bbox-handle { display: none; }
+.handle-nw { top: -6px; left: -6px; cursor: nwse-resize; } .handle-ne { top: -6px; right: -6px; cursor: nesw-resize; } .handle-sw { bottom: -6px; left: -6px; cursor: nesw-resize; } .handle-se { bottom: -6px; right: -6px; cursor: nwse-resize; } .handle-n { top: -6px; left: 50%; transform: translateX(-50%); cursor: ns-resize; } .handle-s { bottom: -6px; left: 50%; transform: translateX(-50%); cursor: ns-resize; } .handle-w { top: 50%; left: -6px; transform: translateY(-50%); cursor: ew-resize; } .handle-e { top: 50%; right: -6px; transform: translateY(-50%); cursor: ew-resize; }
+
+/* --- Kolom Kontrol (Kanan) --- */
+.annotation-section { border: 1px solid var(--ap-medium-gray); border-radius: 0.5rem; background-color: var(--ap-bg-white); margin-bottom: 1.5rem; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+.annotation-section .section-title { display: block; font-weight: 600; padding: 0.75rem 1.25rem; font-size: 0.95rem; color: var(--ap-text-primary); background-color: var(--ap-light-gray); border-bottom: 1px solid var(--ap-medium-gray); border-radius: 0.5rem 0.5rem 0 0; }
+.annotation-section .section-title.required::after { content: " *"; color: var(--ap-danger); }
+.annotation-section .section-content { padding: 1.25rem; }
+.annotation-section .section-instruction { font-size: 0.8rem; color: var(--ap-secondary); margin-bottom: 1rem; line-height: 1.5; }
+.annotation-section .form-check { background-color: var(--ap-light-gray); padding: 0.75rem 1rem; border-radius: 0.375rem; border: 1px solid transparent; transition: border-color 0.2s ease, background-color 0.2s ease; margin-bottom: 0.5rem; }
+.annotation-section .form-check:hover { border-color: var(--ap-medium-gray); }
+.annotation-section .form-check-input:checked + .form-check-label { font-weight: 600; color: var(--ap-primary); }
+.form-check-input { border-color: #000000; border-color: var(--ap-medium-gray); } /* Perbaikan: border default radio */
+.form-check-input:hover{  background-color: #B0E0E6; border-color: #000000;  transition: all 0.2s ease;}
+.annotation-section .form-check-input:checked { background-color: var(--ap-primary); border-color: var(--ap-primary); }
+.annotation-section .form-check-label { font-size: 0.9rem; width: 100%; }
+.annotation-section .form-check-label i { margin-right: 0.5rem; width: 1em; }
+#melon-annotation-area { border-top: none; padding-top: 0; margin-top: 0; }
+#bbox-list-container { margin-bottom: 0; }
+#bbox-list { border: 1px solid var(--ap-medium-gray); border-radius: 0.5rem; background-color: var(--ap-bg-white); max-height: 180px; overflow-y: auto; } /* Tambah overflow-y */
+#bbox-list .list-group-item { padding: 0.6rem 1rem; border: none; border-bottom: 1px solid var(--ap-medium-gray); transition: background-color 0.15s ease-in-out; font-size: 0.875rem; color: var(--ap-text-primary); }
+#bbox-list .list-group-item:last-child { border-bottom: none; }
+#bbox-list .list-group-item:hover:not(.active) { background-color: var(--ap-light-gray); }
+#bbox-list .list-group-item.active { background-color: var(--ap-primary); color: var(--ap-text-light); border-color: var(--ap-primary); font-weight: 500; }
+#bbox-list .list-group-item.active .badge { background-color: rgba(255, 255, 255, 0.9) !important; color: var(--ap-primary) !important; }
+#bbox-list .list-group-item .badge { font-size: 0.7em; padding: 0.35em 0.6em; vertical-align: middle; font-weight: 600; }
+#bbox-list .badge.bg-success { background-color: var(--ap-success) !important; color: white !important; }
+#bbox-list .badge.bg-warning { background-color: var(--ap-warning) !important; color: var(--ap-text-warning) !important; }
+#bbox-list .badge.bg-secondary { background-color: var(--ap-secondary) !important; }
+#bbox-list .list-group-item.no-bboxes { color: var(--ap-secondary); font-style: italic; text-align: center; padding: 1rem; }
+#bbox-list .btn-delete-bbox { padding: 0.15rem 0.5rem; font-size: 0.75rem; background-color: transparent; border: 1px solid transparent; color: var(--ap-secondary); opacity: 0.6; transition: all 0.2s ease; }
+#bbox-list .btn-delete-bbox:hover { opacity: 1; color: var(--ap-danger); background-color: rgba(239, 68, 68, 0.1); }
+#bbox-list .list-group-item.active .btn-delete-bbox { color: rgba(255,255,255,0.7); }
+#bbox-list .list-group-item.active .btn-delete-bbox:hover { color: var(--ap-bg-white); background-color: rgba(255,255,255,0.2); }
+#ripeness-options { transition: all 0.3s ease-in-out; overflow: hidden; padding-top: 0; margin-top: 0; border-top: none; }
+#ripeness-options.hidden { opacity: 0; pointer-events: none; height: 0 !important; margin: 0 !important; padding: 0 !important; border: none !important; }
+#ripeness-section .form-check-label i.fa-sun { color: #f59e0b; }
+#ripeness-section .form-check-label i.fa-seedling { color: #16a34a; }
+#save-button { background-color: var(--ap-primary); border: none; color: var(--ap-text-light); font-weight: 600; padding: 0.75rem 1.5rem; border-radius: 0.5rem; transition: background-color 0.2s ease, box-shadow 0.2s ease; width: 100%; }
+#save-button:disabled { background-color: var(--ap-secondary); opacity: 0.5; cursor: not-allowed; }
+#save-button:not(:disabled):hover { background-color: var(--ap-primary-dark); box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2); }
+
+/* --- Galeri Thumbnail --- */
+#gallery-controls {
+    display: flex;
+    flex-direction: column; /* Susun vertikal */
+    align-items: center; /* Pusatkan horizontal */
+    margin-bottom: 0.75rem;
+    gap: 0.5rem; /* Jarak antara info dan tombol */
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--ap-medium-gray);
+}
+#gallery-info {
+    font-size: 0.85rem; /* Sedikit lebih besar */
+    color: var(--ap-secondary);
+    text-align: center; /* Teks info center */
+    margin-bottom: 0.5rem; /* Jarak ke tombol */
+}
+#gallery-pagination {
+    display: flex; /* Tombol berdampingan */
+    gap: 0.5rem; /* Jarak antar tombol */
+}
+#gallery-pagination button { padding: 0.3rem 0.7rem; font-size: 0.8rem; border: 1px solid var(--ap-medium-gray); color: var(--ap-secondary); background-color: var(--ap-bg-white); border-radius: 0.375rem; transition: all 0.2s ease; }
+#gallery-pagination button:hover:not(:disabled) { background-color: var(--ap-primary); color: white; border-color: var(--ap-primary); }
+#gallery-pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Styling Thumbnail Container & Item */
+#thumbnail-container { display: flex; gap: 15.5px; overflow-x: hidden; padding: 0.75rem; flex-wrap: nowrap; width: 100%; scrollbar-width: thin; scrollbar-color: #bdc3c7 #ecf0f1; min-height: 100px; align-items: center; border: 1px solid var(--ap-medium-gray); border-radius: 0.5rem; background-color: var(--ap-bg-white); }
+#thumbnail-container::-webkit-scrollbar { height: 6px; } #thumbnail-container::-webkit-scrollbar-track { background: #ecf0f1; border-radius: 3px;} #thumbnail-container::-webkit-scrollbar-thumb { background-color: #bdc3c7; border-radius: 3px; }
+.gallery-thumbnail { border: 2px solid transparent; cursor: pointer; transition: all 0.2s ease-in-out; width: 90px; height: 70px; object-fit: cover; border-radius: 0.375rem; flex-shrink: 0; background-color: var(--ap-light-gray); opacity: 0.8; }
+.gallery-thumbnail:hover { opacity: 1; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-color: var(--ap-secondary); }
+.gallery-thumbnail.active-thumb { opacity: 1; border-color: var(--ap-primary); border-width: 3px; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); transform: scale(1.03); }
+
+/* --- Alert Notifikasi --- */
+#notification-area .alert { border-radius: 0.5rem; border: none; padding: 0.75rem 1.25rem; font-size: 0.9rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+#notification-area .alert-success { background-color: #d1e7dd; border-left: 4px solid var(--ap-success); color: #0a3622; }
+#notification-area .alert-danger { background-color: #f8d7da; border-left: 4px solid var(--ap-danger); color: #58151c; }
+#notification-area .alert-info { background-color: #cff4fc; border-left: 4px solid #0dcaf0; color: #055160; }
+#notification-area .alert-warning { background-color: #fff3cd; border-left: 4px solid var(--ap-warning); color: #664d03; }
+#notification-area .btn-close { filter: invert(40%) grayscale(100%) brightness(60%); }

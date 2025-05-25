@@ -1,0 +1,15 @@
+parameters:
+    level: 6 # Level analisis (0-9)
+    paths:
+        - app/
+        - routes/
+        - resources/
+    scanFiles:
+        - resources/views/melon.blade.php
+        - resources/js/app.js
+        - resources/css/app.css
+    stubFiles:
+        - stubs/imagick.stub
+    ignoreErrors:
+        - '#Class (Imagick|ImagickException) not found#'
+        - '#Use of unknown class (Imagick|ImagickException)#'

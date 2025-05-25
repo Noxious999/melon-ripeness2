@@ -1,0 +1,13 @@
+<?php
+
+class Imagick {
+    /**
+     * @param string $filename
+     */
+    public function __construct($filename = null) {}
+    
+    /** @return bool */
+    public function readImage($filename) {}
+}
+
+class ImagickException extends Exception {}

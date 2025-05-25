@@ -1,0 +1,1479 @@
+/* resources/css/evaluate.css */
+/* Desain Ulang Halaman Evaluasi & Manajemen Dataset */
+
+/* ==========================================================================
+   1. Variabel Global & Reset Dasar
+   ========================================================================== */
+:root {
+    /* Palet Warna Utama (Contoh: Modern & Segar) */
+    --ap-primary: #3b71ca; /* Biru Canggih (Bootstrap Primary) */
+    --ap-secondary: #6c757d; /* Abu-abu Sekunder Netral */
+    --ap-success: #14a44d; /* Hijau Sukses (Bootstrap Success) */
+    --ap-danger: #dc4c64; /* Merah Bahaya (Bootstrap Danger) */
+    --ap-warning: #e4a11b; /* Kuning Peringatan (Bootstrap Warning) */
+    --ap-info: #54b4d3; /* Biru Info (Bootstrap Info) */
+
+    /* Warna Teks */
+    --ap-text-dark: #263238; /* Abu-abu Gelap Pekat (Material Design Grey 900) */
+    --ap-text-medium: #546e7a; /* Abu-abu Sedang (Material Design Grey 700) */
+    --ap-text-light: #b0bec5; /* Abu-abu Terang (Material Design Grey 400) */
+    --ap-text-on-primary: #ffffff;
+    --ap-text-on-dark-bg: #eceff1; /* Teks terang untuk background gelap (log) */
+    --ap-text-dark-rgb: 38, 50, 56; /* RGB dari --ap-text-dark */
+    --ap-purple: #8b5cf6; /* Contoh warna ungu (Tailwind Violet 500) */
+
+    /* Warna Background */
+    --ap-bg-light: #eceff1; /* Latar Belakang Halaman Utama (Material Design Grey 100) */
+    --ap-bg-white: #ffffff;
+    --ap-bg-dark-accent: #37474f; /* Untuk aksen gelap, misal header log (Material Design Grey 800) */
+    --ap-bg-primary-hover: #325d99;
+
+    /* Border & Shadow */
+    --ap-border-color: #cfd8dc; /* (Material Design Grey 300) */
+    --ap-border-radius-sm: 0.3rem;
+    --ap-border-radius-md: 0.5rem;
+    --ap-border-radius-lg: 0.75rem;
+    --ap-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --ap-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.07);
+    --ap-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.07);
+    --ap-shadow-focus: 0 0 0 0.25rem rgba(var(--ap-primary-rgb), 0.25); /* Untuk focus ring */
+
+    /* Tipografi */
+    --ap-font-family-sans: "Inter", -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    --ap-font-family-monospace: "SFMono-Regular", Consolas, "Liberation Mono",
+        Menlo, Courier, monospace;
+    --ap-font-size-base: 0.925rem; /* Sedikit lebih besar */
+    --ap-font-size-sm: 0.8rem;
+    --ap-font-size-lg: 1.1rem;
+    --ap-font-weight-light: 300;
+    --ap-font-weight-normal: 400;
+    --ap-font-weight-medium: 500;
+    --ap-font-weight-semibold: 600;
+    --ap-font-weight-bold: 700;
+
+    /* Transisi */
+    --ap-transition-base: all 0.25s ease-in-out;
+
+    /* Untuk mapping variabel Bootstrap jika masih digunakan (opsional, tapi membantu transisi) */
+    --bs-primary: var(--ap-primary);
+    --bs-primary-rgb: 59, 113, 202; /* Sesuaikan dengan --ap-primary */
+    --bs-secondary: var(--ap-secondary);
+    --bs-success: var(--ap-success);
+    --bs-danger: var(--ap-danger);
+    --bs-warning: var(--ap-warning);
+    --bs-info: var(--ap-info);
+    --bs-light: #f8f9fa; /* Bisa tetap pakai Bootstrap light jika cocok */
+    --bs-dark: var(--ap-text-dark);
+    --bs-body-font-family: var(--ap-font-family-sans);
+    --bs-body-font-size: var(--ap-font-size-base);
+    --bs-body-color: var(--ap-text-dark);
+    --bs-body-bg: var(--ap-bg-light);
+    --bs-border-color: var(--ap-border-color);
+    --bs-border-radius: var(--ap-border-radius-md);
+    --bs-border-radius-sm: var(--ap-border-radius-sm);
+    --bs-border-radius-lg: var(--ap-border-radius-lg);
+}
+
+body.evaluate-page {
+    font-family: var(--ap-font-family-sans);
+    background-color: var(--ap-bg-light);
+    color: var(--ap-text-dark);
+    font-size: var(--ap-font-size-base);
+    line-height: 1.6;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* ==========================================================================
+   2. Layout Utama Halaman
+   ========================================================================== */
+.dashboard-container {
+    max-width: 1800px; /* Bisa lebih lebar jika konten banyak */
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--ap-border-color);
+}
+
+.page-header .page-title {
+    font-size: 1.85rem;
+    font-weight: var(--ap-font-weight-semibold);
+    color: var(--ap-text-dark);
+    margin: 0;
+}
+.page-header .page-title i {
+    color: var(--ap-primary);
+    margin-right: 0.75rem;
+    font-size: 1.1em; /* Sedikit lebih besar ikonnya */
+}
+
+.page-actions .btn {
+    font-size: var(--ap-font-size-sm);
+    font-weight: var(--ap-font-weight-medium);
+    padding: 0.45rem 0.9rem;
+    border-radius: var(--ap-border-radius-sm);
+    transition: var(--ap-transition-base);
+}
+.page-actions .btn i {
+    margin-right: 0.4rem;
+}
+
+/* Tambahkan ke evaluate.css atau app.css jika perlu */
+#evaluateScrollToTopBtn {
+    /* Ukuran sudah diatur inline, tapi bisa juga di sini */
+    /* width: 45px; */
+    /* height: 45px; */
+    /* padding: 0; */
+    /* line-height: 45px; */ /* Untuk vertical align ikon jika tidak pakai flex */
+    /* text-align: center; */ /* Untuk horizontal align ikon jika tidak pakai flex */
+    font-size: 1.2rem; /* Sesuaikan ukuran ikon jika perlu */
+}
+
+/* Jika menggunakan display: flex untuk centering ikon di JS */
+#evaluateScrollToTopBtn i {
+    margin: 0; /* Pastikan tidak ada margin default pada ikon */
+}
+
+/* ==========================================================================
+   3. Styling Tab Navigasi
+   ========================================================================== */
+/* Container Tab Utama */
+.main-tabs-container {
+    background-color: var(--ap-bg-white);
+    border-radius: var(--ap-border-radius-lg);
+    box-shadow: var(--ap-shadow-md);
+    margin-bottom: 2rem;
+    overflow: hidden; /* Untuk border-radius bekerja dengan baik pada nav-tabs */
+}
+
+/* Navigasi Tab Utama (Dataset, Evaluasi, Analisis) */
+.main-tabs .nav-link {
+    font-weight: var(--ap-font-weight-medium);
+    font-size: 1rem; /* Sedikit lebih besar */
+    color: var(--ap-text-medium);
+    padding: 0.85rem 1.5rem;
+    border: none;
+    border-bottom: 3px solid transparent;
+    border-radius: 0; /* Hapus border-radius default tab Bootstrap */
+    transition: var(--ap-transition-base);
+    text-align: center;
+}
+.main-tabs .nav-link i {
+    margin-right: 0.5rem;
+    opacity: 0.8;
+}
+.main-tabs .nav-link:hover {
+    color: var(--ap-primary);
+    background-color: rgba(var(--bs-primary-rgb), 0.05);
+}
+.main-tabs .nav-link.active {
+    color: var(--ap-primary);
+    font-weight: var(--ap-font-weight-semibold);
+    background-color: transparent; /* Biarkan transparan, fokus pada border bawah */
+    border-bottom-color: var(--ap-primary);
+}
+.main-tabs .nav-link.active i {
+    opacity: 1;
+}
+
+/* Konten Tab Utama */
+#mainEvaluationTabContent > .tab-pane.show.active {
+    padding: 1.75rem; /* Padding konten tab utama */
+    background-color: transparent; /* Background sudah diatur oleh .main-tabs-container */
+    border: none; /* Tidak perlu border jika sudah ada di container */
+    box-shadow: none;
+}
+
+/* Sub-Tabs (Klasifikasi / Deteksi di dalam Tab Evaluasi Model) */
+.sub-tabs {
+    margin-bottom: 1rem !important; /* Jarak ke pills model */
+    border-bottom: 1px solid var(--ap-border-color);
+}
+.sub-tabs .nav-link {
+    font-weight: var(--ap-font-weight-medium);
+    font-size: 0.95rem;
+    color: var(--ap-text-medium);
+    padding: 0.7rem 1.2rem;
+    border: none;
+    border-bottom: 3px solid transparent;
+    transition: var(--ap-transition-base);
+}
+.sub-tabs .nav-link i {
+    margin-right: 0.4rem;
+    opacity: 0.7;
+}
+.sub-tabs .nav-link:hover {
+    color: var(--ap-primary);
+    background-color: rgba(var(--bs-primary-rgb), 0.03);
+}
+.sub-tabs .nav-link.active {
+    color: var(--ap-primary);
+    font-weight: var(--ap-font-weight-semibold);
+    border-bottom-color: var(--ap-primary);
+    background-color: transparent;
+}
+.sub-tabs .nav-link.active i {
+    opacity: 1;
+}
+
+/* Navigasi Pills Model (Sub-Sub-Tab) */
+.model-sub-sub-tabs {
+    border-bottom: 1px solid var(--ap-border-color);
+    padding-bottom: 0.5rem; /* Beri sedikit ruang di bawah pills */
+    margin-bottom: 1.5rem !important;
+    display: flex;
+    flex-wrap: wrap; /* Izinkan wrap jika model banyak */
+    gap: 0.3rem; /* Jarak antar pills */
+    justify-content: flex-start; /* Atau center jika diinginkan */
+}
+.model-sub-sub-tabs .nav-link {
+    font-size: var(--ap-font-size-sm);
+    font-weight: var(--ap-font-weight-normal);
+    color: var(--ap-text-medium);
+    background-color: rgba(var(--bs-primary-rgb), 0.07);
+    border: 1px solid transparent;
+    border-radius: var(--ap-border-radius-sm);
+    padding: 0.4rem 0.8rem;
+    white-space: nowrap;
+    transition: var(--ap-transition-base);
+    margin: 0; /* Hapus margin default nav-link pills */
+}
+.model-sub-sub-tabs .nav-link:hover {
+    background-color: rgba(var(--bs-primary-rgb), 0.15);
+    color: var(--ap-primary);
+}
+.model-sub-sub-tabs .nav-link.active {
+    background-color: var(--ap-primary);
+    color: var(--ap-text-on-primary);
+    font-weight: var(--ap-font-weight-medium);
+    box-shadow: var(--ap-shadow-sm);
+}
+/* Konten Sub-Sub-Tab Model & Konten Sub-Tab */
+#modelTypeTabContent > .tab-pane.show.active,
+#classifierModelNavTabsContent > .tab-pane.show.active,
+#detectorModelNavTabsContent > .tab-pane.show.active {
+    padding: 0; /* Tidak perlu padding di level ini, akan diatur oleh card */
+    border: none;
+    background-color: transparent;
+    box-shadow: none;
+}
+
+/* ==========================================================================
+   4. Styling Card Umum & Spesifik
+   ========================================================================== */
+.evaluate-page .card {
+    /* Berlaku untuk semua card di halaman ini */
+    border: 1px solid var(--ap-border-color);
+    border-radius: var(--ap-border-radius-lg);
+    margin-bottom: 1.75rem;
+    box-shadow: var(--ap-shadow-sm);
+    background-color: var(--ap-bg-white);
+    transition: var(--ap-transition-base);
+    overflow: hidden; /* Agar border-radius header card bekerja */
+}
+.evaluate-page .card:hover {
+    box-shadow: var(--ap-shadow-md);
+}
+
+.evaluate-page .card-header {
+    background-color: var(--ap-bg-white);
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--ap-border-color);
+    border-radius: 0; /* Hapus border-radius bawaan header agar container card yg mengontrol */
+}
+.evaluate-page .card-header h5,
+.evaluate-page .card-header h6 {
+    margin-bottom: 0;
+    font-size: 1.05rem; /* Ukuran default judul card */
+    font-weight: var(--ap-font-weight-semibold);
+    color: var(--ap-text-dark);
+}
+.evaluate-page .card-header i {
+    margin-right: 0.6rem;
+    color: var(--ap-secondary); /* Warna ikon default di header */
+}
+
+/* Kartu Model Individual (yang berisi semua detail model) */
+.individual-model-card {
+    margin-top: 0.5rem; /* Jarak dari pills model */
+}
+.individual-model-card .card-header {
+    /* Bisa beri background berbeda jika ingin */
+    background-color: var(--ap-bg-light); /* Abu-abu terang */
+}
+.individual-model-card .card-header .card-title-model {
+    font-size: 1.15rem; /* Judul model lebih besar */
+    color: var(--ap-primary);
+}
+/* Highlight untuk Model Terbaik */
+.individual-model-card.border-primary {
+    /* Bootstrap class (atau buat kustom) */
+    border-color: var(--ap-primary) !important;
+    box-shadow: var(--ap-shadow-lg), 0 0 0 3px rgba(var(--bs-primary-rgb), 0.15);
+}
+.individual-model-card.border-primary .card-header {
+    background-color: rgba(
+        var(--bs-primary-rgb),
+        0.1
+    ); /* Background lebih subtle */
+    color: var(--ap-primary);
+}
+.individual-model-card.border-primary .card-header .card-title-model i {
+    /* Ikon bintang */
+    color: var(--ap-warning);
+}
+.individual-model-card .card-body {
+    padding: 1.5rem;
+}
+
+/* Section di dalam Kartu Model (Metadata, Validasi, Tes, Stabilitas, dll.) */
+.model-section {
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--ap-border-color);
+    border-radius: var(--ap-border-radius-md);
+    background-color: var(--ap-bg-white); /* Default putih */
+}
+.model-section:last-of-type {
+    margin-bottom: 0;
+}
+.section-title {
+    font-size: 1rem;
+    font-weight: var(--ap-font-weight-semibold);
+    color: var(--ap-text-dark);
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--ap-primary);
+    display: flex;
+    align-items: center;
+}
+.section-title i {
+    font-size: 1.1em; /* Ikon section title sedikit lebih besar */
+    margin-right: 0.75rem;
+    opacity: 0.9;
+}
+/* Warna ikon section title yang berbeda-beda */
+.model-meta-section .section-title i {
+    color: var(--ap-info);
+}
+.validation-performance-section .section-title i {
+    color: var(--ap-success);
+}
+.test-performance-section .section-title i {
+    color: var(--ap-warning);
+} /* Atau warna lain */
+.stability-analysis-section .section-title i {
+    color: var(--ap-primary);
+}
+.significance-comparison-section .section-title i {
+    color: var(--ap-secondary);
+}
+
+/* Metadata Section (Khusus) */
+.model-meta-section {
+    background-color: #fcfdff; /* Background sangat terang */
+    border-left: 4px solid var(--ap-info);
+}
+.model-meta-summary .meta-item {
+    font-size: var(--ap-font-size-sm);
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: flex-start; /* Agar ikon sejajar dengan baris pertama teks jika value panjang */
+}
+.model-meta-summary .meta-item i {
+    width: 1.8em; /* Lebar ikon */
+    color: var(--ap-text-light); /* Warna ikon lebih pudar */
+    margin-right: 0.3rem;
+    margin-top: 0.1em; /* Sesuaikan alignment vertikal ikon */
+}
+.model-meta-summary .meta-item .value {
+    font-weight: var(--ap-font-weight-medium);
+    color: var(--ap-text-medium);
+}
+.model-meta-summary .feature-list {
+    font-size: 0.75rem;
+    color: var(--ap-text-medium);
+    max-height: 60px; /* Batasi tinggi daftar fitur */
+    overflow-y: auto;
+    padding: 0.3rem;
+    background-color: rgba(var(--bs-primary-rgb), 0.03);
+    border-radius: var(--ap-border-radius-sm);
+}
+
+.model-evaluation-details {
+    /* Padding utama untuk seluruh konten kartu model individual */
+}
+
+.model-evaluation-details .model-section.card {
+    /* Target kartu yang menjadi section */
+    margin-bottom: 1.75rem; /* Jarak antar kartu section */
+}
+.model-evaluation-details .model-section.card:last-child {
+    margin-bottom: 0.5rem; /* Kurangi margin untuk section terakhir */
+}
+
+.model-evaluation-details .card-header.bg-light-subtle {
+    /* Styling spesifik untuk header kartu section */
+    border-bottom: 1px solid var(--ap-border-color);
+}
+
+.model-evaluation-details .section-title-like {
+    /* Untuk h6 di card-header section */
+    font-size: 1rem; /* Sesuaikan ukuran */
+    font-weight: var(--ap-font-weight-semibold);
+    color: var(
+        --ap-text-dark
+    ); /* Atau var(--ap-primary) jika ingin lebih menonjol */
+}
+.model-evaluation-details .section-title-like i {
+    font-size: 1.1em; /* Ukuran ikon */
+    margin-right: 0.6rem;
+    /* Warna ikon sudah di-set di Blade (text-info, text-success, dll.) */
+}
+
+/* Metadata Section */
+.model-meta-section .meta-item {
+    display: flex;
+    align-items: flex-start; /* Agar ikon align dengan baris pertama teks */
+    padding: 0.5rem; /* Padding internal item meta */
+    margin-bottom: 0.5rem; /* Jarak antar item meta */
+    background-color: var(
+        --ap-bg-white
+    ) !important; /* Pastikan berbeda dari card body jika card body diberi warna */
+    border-radius: var(--ap-border-radius-sm);
+    /* border: 1px solid var(--ap-border-color); /* Jika ingin border per item */
+}
+.model-meta-section .meta-item:last-child {
+    margin-bottom: 0;
+}
+.model-meta-section .meta-item i {
+    margin-top: 0.15em; /* Sesuaikan posisi vertikal ikon */
+    margin-right: 0.75rem;
+    min-width: 1.5em; /* Agar teks setelah ikon rata */
+    text-align: center;
+}
+.model-meta-section .meta-item .meta-label {
+    font-size: 0.78rem;
+    color: var(--ap-text-medium);
+    margin-bottom: 0.1rem;
+}
+.model-meta-section .meta-item .meta-value {
+    font-size: 0.9rem;
+    font-weight: var(--ap-font-weight-medium);
+}
+.model-meta-section .feature-list {
+    font-size: 0.78rem; /* Ukuran font daftar fitur */
+    color: var(--ap-text-medium);
+    max-height: 70px;
+    overflow-y: auto;
+    padding: 0.5rem;
+    background-color: rgba(
+        var(--bs-secondary-rgb),
+        0.05
+    ); /* Background sangat lembut */
+    border: 1px solid var(--ap-border-color);
+    border-radius: var(--ap-border-radius-sm);
+}
+
+/* ==========================================================================
+   5. Styling Tabel Metrik & Confusion Matrix (Web)
+   ========================================================================== */
+/* Kontainer untuk grafik batang metrik */
+.metric-chart-container {
+    padding: 1rem;
+    border: 1px solid var(--ap-border-color);
+    border-radius: var(--ap-border-radius-md);
+    background-color: var(--ap-bg-white);
+}
+.metric-chart-container canvas {
+    width: 100% !important; /* Pastikan canvas mengisi kontainer */
+}
+
+/* Tampilan Metrik (dari metric-display.blade.php) */
+.metric-overall {
+    margin-bottom: 1.25rem !important;
+}
+.metric-overall .metric-label {
+    font-size: 0.9rem;
+    color: var(--ap-text-medium);
+}
+.metric-overall .metric-value {
+    font-size: 2rem; /* Akurasi utama sangat besar */
+    font-weight: var(--ap-font-weight-bold);
+    color: var(--ap-primary);
+}
+.metric-details-row .metric-group {
+    padding: 1rem;
+    background-color: var(--ap-bg-light);
+    border: 1px solid var(--ap-border-color);
+    border-radius: var(--ap-border-radius-md);
+    box-shadow: var(--ap-shadow-sm);
+}
+.metric-details-row .metric-header {
+    font-size: 0.9rem;
+    font-weight: var(--ap-font-weight-semibold);
+    color: var(--ap-text-dark);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--ap-border-color);
+}
+.metric-details-row .metric-row {
+    font-size: var(--ap-font-size-sm);
+}
+.metric-details-row .metric-row .metric-label {
+    color: var(--ap-text-medium);
+}
+.metric-details-row .metric-row .metric-value {
+    font-weight: var(--ap-font-weight-semibold);
+}
+.metric-details-row .metric-value.positive {
+    color: var(--ap-success);
+}
+.metric-details-row .metric-value.negative {
+    color: var(--ap-warning);
+} /* Atau warna lain untuk negatif */
+
+/* display metrik */
+.metric-display-component .metric-overall .metric-main-label {
+    /* Styling khusus jika diperlukan */
+}
+
+.metric-display-component .metric-overall .metric-main-value {
+    /* Anda sudah punya .metric-overall .metric-value di evaluate.css, pastikan itu mencakup ini */
+    /* Atau buat lebih spesifik */
+    line-height: 1; /* Agar angka besar tidak terlalu banyak makan ruang vertikal */
+}
+
+.metric-display-component .metric-group {
+    background-color: var(
+        --ap-bg-white
+    ); /* Atau var(--ap-bg-light) jika ingin sedikit beda */
+    /* transisi bisa ditambahkan jika ada efek hover */
+}
+
+.metric-display-component .metric-header {
+    /* Styling sudah ada di evaluate.css, pastikan konsisten */
+    font-size: 0.95rem; /* Sedikit lebih besar dari item metriknya */
+}
+
+.metric-display-component .metric-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.35rem 0; /* Padding vertikal & horizontal untuk setiap baris metrik */
+    border-bottom: 1px dashed var(--ap-border-color); /* Pemisah antar item metrik */
+    font-size: var(--ap-font-size-sm);
+}
+.metric-display-component .metric-row:last-of-type {
+    border-bottom: none; /* Hapus border untuk item terakhir di grup (kecuali support) */
+}
+.metric-display-component .metric-row .metric-label {
+    /* Styling sudah ada, pastikan ikonnya ter-align dengan baik */
+    display: flex;
+    align-items: center;
+    color: var(--ap-text-dark);
+}
+.metric-display-component .metric-row .metric-label i {
+    margin-right: 0.5em;
+    width: 1.2em; /* Agar ikon punya lebar tetap */
+    text-align: center;
+}
+
+.metric-display-component .metric-row .metric-value {
+    /* Styling sudah ada */
+    min-width: 60px; /* Beri lebar minimum agar angka tidak loncat-loncat */
+    text-align: right;
+}
+
+/* Untuk support, yang menggunakan .small */
+.metric-display-component .metric-row.mt-2 .metric-label.small,
+.metric-display-component .metric-row.mt-2 .metric-value.small {
+    color: var(--ap-text-light); /* Lebih pudar */
+    font-weight: var(--ap-font-weight-normal) !important; /* Tidak bold */
+}
+
+.confusion-matrix-table-wrapper {
+    margin-top: 1rem; /* Jarak dari metrik display */
+}
+.sub-section-title {
+    /* Judul "Confusion Matrix (Validasi)" */
+    font-size: 0.9rem;
+    font-weight: var(--ap-font-weight-medium);
+    color: var(--ap-text-medium);
+    margin-bottom: 0.75rem;
+    text-align: center;
+}
+
+.cm-table-web {
+    /* Target tabel CM spesifik untuk web */
+    font-size: var(--ap-font-size-sm);
+    border: 1px solid var(--ap-border-color);
+    /* box-shadow: var(--ap-shadow-sm); /* Opsional */
+    margin-bottom: 0; /* Hapus margin default tabel jika wrapper sudah handle */
+}
+
+.cm-table-web caption {
+    caption-side: top;
+    font-weight: var(--ap-font-weight-medium);
+    color: var(--ap-text-medium);
+    padding-bottom: 0.5rem;
+}
+.cm-table-web caption i {
+    color: var(--ap-primary); /* Atau warna lain */
+}
+.cm-table-web thead th,
+.cm-table-web thead td {
+    background-color: rgba(
+        var(--bs-primary-rgb),
+        0.03
+    ); /* Header sangat lembut */
+    font-weight: var(--ap-font-weight-semibold);
+    color: var(--ap-text-dark);
+    border-bottom-width: 2px;
+    border-bottom-color: var(
+        --ap-border-color
+    ) !important; /* Pastikan lebih kuat dari border sel biasa */
+    padding: 0.5rem 0.4rem; /* Padding header */
+    vertical-align: middle;
+}
+
+.cm-table-web .cm-corner {
+    background-color: transparent !important;
+    border: none !important;
+    position: relative; /* Untuk positioning teks Prediksi */
+    min-width: 80px; /* Beri ruang untuk teks yang dirotasi dan teks prediksi */
+}
+
+.cm-table-web .cm-header-actual {
+    font-weight: var(--ap-font-weight-semibold);
+    color: var(--ap-text-dark);
+    padding: 0.5rem;
+    border-left: 1px solid var(--ap-border-color) !important;
+    min-width: 100px; /* Lebar minimum untuk label aktual */
+}
+
+/* Styling Label Kelas di Header dan Baris (Web) */
+.cm-table-web .header-positive .icon-positive,
+.cm-table-web .label-positive .icon-positive {
+    color: var(--ap-success) !important;
+    font-weight: var(--ap-font-weight-semibold) !important;
+}
+.cm-table-web .header-negative .icon-negative,
+.cm-table-web .label-negative .icon-negative {
+    color: var(--ap-danger) !important;
+    font-weight: var(--ap-font-weight-semibold) !important;
+}
+
+/* Styling Sel Body (Web) */
+.cm-table-web tbody th {
+    /* Label Aktual (baris) */
+    background-color: rgba(var(--bs-primary-rgb), 0.03);
+    font-weight: var(--ap-font-weight-semibold);
+    text-align: right;
+    padding: 0.6rem 0.75rem;
+    vertical-align: middle;
+    border-right: 1px solid var(--ap-border-color) !important;
+}
+
+.cm-table-web .cm-value {
+    font-size: 1.2rem; /* Angka nilai CM lebih besar */
+    font-weight: var(--ap-font-weight-bold);
+    padding: 0.75rem 0.5rem;
+    line-height: 1;
+}
+.cm-table-web .cm-value small.cm-cell-label {
+    font-size: 0.6rem;
+    font-weight: var(--ap-font-weight-normal);
+    color: var(--ap-text-medium);
+    display: block;
+    margin-top: 0.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Highlight Sel CM (Web) - Ini sudah ada di evaluate.css sebelumnya, pastikan selectornya masih pas */
+.cm-table-web td.cm-cell-tp .cm-cell-label,
+.cm-table-web td.cm-cell-tn .cm-cell-label {
+    background-color: rgba(
+        var(--bs-success-rgb),
+        0.15
+    ) !important; /* Background lebih jelas */
+    color: var(--ap-success) !important; /* Warna teks angka juga hijau */
+    border: 2px solid rgba(var(--bs-success-rgb), 0.4) !important; /* Border lebih tebal */
+}
+.cm-table-web td.cm-cell-fp .cm-cell-label,
+.cm-table-web td.cm-cell-fn .cm-cell-label {
+    background-color: rgba(
+        var(--bs-danger-rgb),
+        0.1
+    ) !important; /* Background lebih jelas */
+    color: var(--ap-danger) !important; /* Warna teks angka juga merah */
+    border: 2px solid rgba(var(--bs-danger-rgb), 0.35) !important; /* Border lebih tebal */
+}
+
+/* ==========================================================================
+   6. Styling Bagian Analisis (Stabilitas, Signifikansi)
+   ========================================================================== */
+.stability-analysis-section,
+.significance-comparison-section {
+    background-color: #fcfdff; /* Background sedikit berbeda */
+}
+
+.model-stability-details {
+    /* Kontainer utama, bisa diberi padding jika section title tidak cukup */
+}
+
+.model-stability-details .sub-section {
+    margin-bottom: 1.5rem; /* Jarak antar sub-bagian */
+    padding: 1rem; /* Padding internal sub-bagian */
+    background-color: var(
+        --ap-bg-white
+    ); /* Atau biarkan transparan jika section parent sudah berwarna */
+    border: 1px solid var(--ap-border-color);
+    border-radius: var(--ap-border-radius-md);
+}
+.model-stability-details .sub-section:last-child {
+    margin-bottom: 0;
+}
+
+.model-stability-details .sub-section-title {
+    font-size: 0.95rem; /* Ukuran judul sub-bagian */
+    font-weight: var(--ap-font-weight-semibold);
+    color: var(--ap-text-dark);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--ap-border-color);
+    display: flex;
+    align-items: center;
+}
+.model-stability-details .sub-section-title i {
+    font-size: 1em;
+    margin-right: 0.6rem;
+    /* Warna ikon bisa spesifik per section jika diinginkan */
+}
+
+.model-stability-analysis-container .section-title {
+    /* Styling sudah ada, pastikan ikonnya (fa-shield-check) sesuai */
+    color: var(--ap-primary); /* Atau warna lain yang cocok untuk stabilitas */
+}
+.model-stability-analysis-container .section-title i {
+    color: var(--ap-primary);
+}
+
+.model-stability-details .sub-section-card {
+    /* Kartu untuk setiap sub-bagian (Overfitting, CV, LC) */
+    /* Styling card umum sudah ada, ini bisa untuk override jika perlu */
+}
+.model-stability-details .sub-section-card .card-header {
+    padding: 0.6rem 1rem; /* Padding header kartu sub-bagian */
+    border-bottom: 1px solid var(--ap-border-color);
+}
+.model-stability-details .sub-section-card .card-header h6 {
+    font-size: 0.85rem; /* Ukuran judul di header kartu sub-bagian */
+    font-weight: var(--ap-font-weight-semibold);
+}
+.model-stability-details .sub-section-card .card-header h6 i {
+    font-size: 0.9em; /* Ukuran ikon di header kartu sub-bagian */
+    margin-right: 0.5rem;
+}
+
+/* Learning Curve */
+.learning-curve-graphic-container canvas {
+    width: 100% !important;
+    border: 1px solid var(--ap-border-color);
+    border-radius: var(--ap-border-radius-sm);
+    padding: 0.5rem;
+}
+.learning-curve .alert {
+    /* Rekomendasi LC */
+    font-size: var(--ap-font-size-sm);
+    border-left-width: 4px;
+}
+
+/* Learning Curve Section */
+.learning-curve-section {
+    /* Jika menggunakan d-flex flex-column, pastikan tingginya cukup */
+}
+.learning-curve-section .alert {
+    box-shadow: none;
+    border-width: 0 0 0 4px;
+    border-radius: var(--ap-border-radius-sm);
+}
+.learning-curve-section .alert strong {
+    font-size: 0.95em;
+}
+.learning-curve-section .alert small {
+    font-size: 0.9em;
+}
+.learning-curve-graphic-container {
+    position: relative;
+    border: 1px solid var(--ap-border-color);
+    border-radius: var(
+        --ap-border-radius-md
+    ); /* Radius lebih besar untuk grafik */
+    padding: 0.75rem;
+    background-color: var(--ap-bg-white);
+    /* min-height sudah diatur oleh JS jika tidak ada data, atau oleh data-chart-height */
+}
+
+.validation-performance-section .col-lg-12.col-xl-5.d-flex,
+.test-performance-section .col-lg-12.col-xl-5.d-flex {
+    /* Pastikan parent-nya juga memiliki display flex dan flex-direction column jika perlu */
+}
+.validation-performance-section .metric-chart-container,
+.test-performance-section .metric-chart-container {
+    /* Pastikan ini mengisi tinggi yang tersedia jika di dalam flex item */
+    flex-grow: 1;
+    display: flex; /* Agar canvas bisa di tengah jika lebih kecil */
+    align-items: center;
+    justify-content: center;
+    min-height: 200px; /* Tinggi minimal untuk kontainer chart */
+}
+
+/* HR Pemisah */
+hr.custom-hr {
+    border: none;
+    height: 2px;
+    background-image: linear-gradient(
+        to right,
+        transparent,
+        var(--ap-primary),
+        transparent
+    );
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Overfitting Alert di dalam card */
+.overfitting-analysis .alert {
+    box-shadow: none; /* Mungkin tidak perlu shadow lagi jika sudah di dalam card */
+    border-width: 0 0 0 4px; /* Hanya border kiri */
+    border-radius: var(--ap-border-radius-sm);
+}
+.overfitting-analysis .alert strong {
+    font-size: 0.95em;
+}
+.overfitting-analysis .alert small {
+    font-size: 0.9em;
+}
+
+/* CV Stats */
+.cv-stats .cv-stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0.2rem;
+    border-bottom: 1px dashed var(--ap-border-color);
+    font-size: var(--ap-font-size-sm);
+}
+.cv-stats .cv-stat-item:last-child {
+    border-bottom: none;
+}
+/* CV Summary List */
+.cv-summary-list {
+    font-size: var(--ap-font-size-sm);
+}
+.cv-summary-list .cv-stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0; /* Padding atas bawah */
+    border-bottom: 1px dashed var(--ap-border-color);
+}
+.cv-summary-list .cv-stat-item:last-child {
+    border-bottom: none;
+}
+.cv-summary-list .stat-label {
+    color: var(--ap-text-medium);
+    display: flex;
+    align-items: center;
+}
+.cv-summary-list .stat-label i {
+    margin-right: 0.6em;
+    width: 1.2em; /* Lebar ikon tetap */
+    text-align: center;
+}
+.cv-summary-list .stat-value {
+    font-weight: var(--ap-font-weight-semibold);
+    color: var(--ap-text-dark);
+    background-color: rgba(
+        var(--bs-primary-rgb),
+        0.05
+    ); /* Background sangat lembut */
+    padding: 0.15rem 0.4rem;
+    border-radius: var(--ap-border-radius-sm);
+}
+
+.cv-stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.2rem;
+    font-size: var(--ap-font-size-sm);
+    border-bottom: 1px dashed var(--ap-border-color);
+}
+.cv-stat-item:last-child {
+    border-bottom: none;
+}
+.cv-stat-item .stat-label {
+    color: var(--ap-text-medium);
+    display: flex;
+    align-items: center;
+}
+.cv-stat-item .stat-label i {
+    margin-right: 0.5em;
+    width: 1.2em;
+    text-align: center;
+}
+.cv-stat-item .stat-value {
+    font-weight: var(--ap-font-weight-semibold);
+    color: var(--ap-text-dark);
+}
+
+.cv-details .btn-outline-secondary {
+    /* Tombol "Lihat Detail" */
+    font-size: 0.75rem;
+    padding: 0.3rem 0.7rem;
+    width: 100%; /* Atau sesuaikan */
+    text-align: left; /* Agar ikon chevron di kanan */
+    display: flex; /* Untuk alignment ikon chevron */
+    justify-content: space-between;
+    align-items: center;
+}
+.cv-details .btn-outline-secondary .fa-chevron-down {
+    transition: transform 0.2s ease-in-out;
+}
+.cv-details .btn-outline-secondary[aria-expanded="true"] .fa-chevron-down {
+    transform: rotate(180deg);
+}
+.cv-details .list-group-item {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.6rem; /* Padding lebih rapat untuk item list */
+}
+.cv-details .badge {
+    font-size: 0.9em; /* Relatif terhadap parent */
+}
+.cv-details ul {
+    max-height: 120px;
+    font-size: 0.75rem;
+} /* Detail skor CV per fold */
+
+/* Tombol Collapse Detail CV */
+.cv-details-collapse .btn-outline-secondary {
+    font-size: 0.78rem;
+    font-weight: var(--ap-font-weight-medium);
+    color: var(--ap-text-medium);
+    border-color: var(--ap-border-color);
+    /* Styling ikon chevron sudah ada di evaluate.css (global) */
+}
+.cv-details-collapse .btn-outline-secondary:hover {
+    background-color: rgba(var(--bs-primary-rgb), 0.05);
+    border-color: var(--ap-primary);
+    color: var(--ap-primary);
+}
+.cv-details-collapse .list-group-item {
+    font-size: 0.78rem;
+    padding: 0.35rem 0.75rem;
+}
+.cv-details-collapse .badge {
+    font-size: 0.9em; /* Relatif */
+}
+
+.cv-details-table .table-responsive thead.sticky-top th {
+    position: sticky;
+    top: 0;
+    z-index: 1; /* Agar di atas konten body tabel saat scroll */
+    background-color: var(
+        --bs-table-bg,
+        #fff
+    ); /* Pastikan ada background agar tidak transparan */
+}
+
+/* Signifikansi Statistik */
+.comparison-table {
+    font-size: var(--ap-font-size-sm);
+    margin-bottom: 0; /* Karena sudah dibungkus .table-responsive */
+}
+.comparison-table th,
+.comparison-table td {
+    padding: 0.5rem;
+}
+
+.comparison-table thead th {
+    font-weight: var(
+        --ap-font-weight-medium
+    ); /* Header tabel tidak terlalu tebal */
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+}
+.comparison-table thead th small {
+    font-weight: var(--ap-font-weight-normal);
+    color: var(--ap-text-medium);
+    display: block;
+    font-size: 0.85em; /* Sub-teks header sedikit lebih kecil */
+    margin-top: 0.1rem;
+}
+
+.comparison-table tbody td,
+.comparison-table tbody th {
+    vertical-align: middle;
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+}
+.comparison-table tbody th.fw-medium {
+    /* Kolom nama metrik */
+    color: var(--ap-text-dark);
+    font-weight: var(--ap-font-weight-medium) !important;
+}
+.comparison-table tbody th.fw-medium i {
+    width: 1.6em; /* Lebar ikon */
+    text-align: center;
+    color: var(--ap-secondary);
+    opacity: 0.8;
+}
+
+.comparison-table .py-2.px-1.rounded-1 {
+    border-radius: var(--ap-border-radius-sm) !important;
+    padding-top: 0.4rem !important;
+    padding-bottom: 0.4rem !important;
+}
+
+.comparison-table .badge.rounded-pill {
+    font-size: 0.8em; /* Ukuran badge */
+    padding: 0.35em 0.7em;
+    font-weight: var(--ap-font-weight-semibold); /* Teks badge lebih tebal */
+}
+.comparison-table .badge.rounded-pill i {
+    font-size: 0.9em; /* Ikon di badge */
+}
+.significance-interpretation.alert {
+    font-size: var(--ap-font-size-sm);
+    padding: 0.8rem 1rem;
+    /* Warna sudah diatur oleh bg-light-subtle, bisa di-override jika mau */
+}
+.significance-interpretation i {
+    /* Warna ikon sudah diatur oleh text-primary di Blade */
+}
+
+.significance-interpretation.alert {
+    font-size: var(--ap-font-size-sm);
+    padding: 0.75rem 1rem;
+    /* background-color: var(--ap-bg-light); /* Jika menggunakan kelas alert-light */
+    /* border-color: var(--ap-border-color); */
+    /* color: var(--ap-text-medium); */
+}
+
+.statistical-significance-details {
+    /* Kontainer utama, bisa diberi padding jika section title tidak cukup */
+}
+
+.statistical-significance-details .section-title {
+    /* Styling sudah ada, pastikan ikonnya (fa-balance-scale) sesuai */
+    /* Mungkin ganti warna ikon utama jika diinginkan */
+    /* color: var(--ap-info); */
+}
+/* .statistical-significance-details .section-title i {
+    color: var(--ap-info);
+} */
+
+/* ==========================================================================
+   7. Styling Tab Dataset & Proses SSE
+   ========================================================================== */
+.dataset-management-card .card-header {
+    background-color: var(--ap-bg-light); /* Atau warna lain yang cocok */
+}
+
+.hidden-by-js {
+    display: none !important; /* Gunakan !important untuk testing override */
+}
+
+/* Stat cards di tab dataset */
+.stat-card {
+    background-color: var(--ap-bg-white);
+    border: 1px solid var(--ap-border-color);
+    border-radius: var(--ap-border-radius-md);
+    padding: 1.25rem 1rem;
+    text-align: center;
+    box-shadow: var(--ap-shadow-sm);
+    transition: var(--ap-transition-base);
+}
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--ap-shadow-md);
+}
+.stat-card .stat-title {
+    font-size: var(--ap-font-size-sm);
+    color: var(--ap-text-medium);
+    margin-bottom: 0.3rem;
+    font-weight: var(--ap-font-weight-medium);
+}
+.stat-card .stat-value {
+    font-size: 1.8rem; /* Angka statistik besar */
+    font-weight: var(--ap-font-weight-bold);
+    color: var(--ap-primary);
+    line-height: 1.1;
+}
+/* Tabel detail anotasi di tab dataset */
+#stats-content .table thead {
+    background-color: var(--ap-bg-light);
+}
+/* Area aksi dataset */
+.dataset-actions {
+    background-color: var(--ap-bg-white);
+    padding: 1.25rem;
+    border-radius: var(--ap-border-radius-md);
+    border: 1px solid var(--ap-border-color);
+    box-shadow: var(--ap-shadow-sm);
+}
+#dataset-analysis-display {
+    background-color: var(--ap-bg-white);
+    padding: 1.25rem;
+    border-radius: var(--ap-border-radius-md);
+    border: 1px solid var(--ap-border-color);
+    min-height: 150px; /* Agar tidak collapse */
+}
+
+/* Styling untuk tabel fitur di Tab Kualitas Dataset */
+#stats-content .table th[colspan="3"],
+#stats-content .table th[rowspan="2"] {
+    background-color: var(
+        --bs-gray-200
+    ) !important; /* Warna header grup lebih gelap sedikit */
+    font-weight: var(--ap-font-weight-semibold);
+}
+
+.text-purple {
+    color: var(--ap-purple) !important;
+}
+.bg-purple-subtle {
+    /* Jika ingin background subtle untuk kartu atau elemen lain */
+    background-color: rgba(139, 92, 246, 0.1) !important;
+}
+
+/* Proses SSE Card */
+.process-control-card {
+    background-color: var(
+        --ap-bg-white
+    ) !important; /* Override bg-light-subtle jika perlu */
+    border-radius: var(--ap-border-radius-md) !important;
+    box-shadow: var(--ap-shadow-sm);
+}
+.process-control-card .btn {
+    font-size: var(--ap-font-size-sm);
+    font-weight: var(--ap-font-weight-medium);
+}
+.log-output {
+    /* Area log SSE */
+    background-color: var(--ap-bg-dark-accent);
+    color: var(--ap-text-on-dark-bg);
+    font-family: var(--ap-font-family-monospace);
+    font-size: 0.78rem;
+    padding: 0.75rem;
+    border-radius: var(--ap-border-radius-sm);
+    max-height: 200px; /* Sesuaikan tinggi log */
+    overflow-y: auto;
+    border: 1px solid var(--ap-text-dark);
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+#extract-features-status,
+#train-classifier-status,
+#train-detector-status {
+    font-weight: var(--ap-font-weight-medium);
+    min-height: 1.5em; /* Agar tidak lompat saat teks berubah */
+}
+
+/* Styling untuk Indikator SSE yang Diminimalkan */
+#sse-progress-indicator.minimized .sse-details-collapsible {
+    display: none;
+}
+
+#sse-progress-indicator {
+    transition: width 0.3s ease-in-out, height 0.3s ease-in-out; /* Transisi untuk ukuran jika diubah */
+}
+
+/* Opsional: Sesuaikan ukuran saat minimize jika diinginkan */
+/*
+#sse-progress-indicator.minimized {
+    width: 200px !important; // Atau lebar yang lebih kecil
+    padding: 0.5rem !important; // Padding lebih kecil
+}
+#sse-progress-indicator.minimized .sse-header-condensed {
+    margin-bottom: 0 !important;
+}
+
+/* ==========================================================================
+   8. Styling untuk Tab Pembaruan Terkini (Recent Updates Tab)
+   ========================================================================== */
+
+.recent-updates-container .card {
+    /* Kartu di dalam tab Pembaruan Terkini */
+    /* Anda mungkin ingin styling card ini sedikit berbeda dari card model individual */
+    /* atau biarkan menggunakan style card umum dari evaluate.css */
+    margin-bottom: 1.5rem;
+}
+
+.recent-updates-container .card-header.bg-info-subtle {
+    /* Header kartu di tab Pembaruan Terkini */
+    border-bottom: 1px solid rgba(var(--bs-info-rgb), 0.3); /* Contoh border dengan warna info */
+}
+
+.recent-updates-container .card-header h5 {
+    font-size: 1.1rem; /* Sesuaikan ukuran judul kartu */
+}
+.recent-updates-container .card-header h5 i {
+    color: var(
+        --bs-info-text-emphasis
+    ); /* Atau var(--ap-info) jika Anda prefer variabel sendiri */
+}
+
+.recent-updates-container .alert-warning .alert-heading i,
+.recent-updates-container .alert-success .alert-heading i {
+    font-size: 1.1em; /* Sedikit perbesar ikon di heading alert */
+}
+
+.recent-updates-container .alert .alert-heading {
+    font-size: 1rem;
+}
+.recent-updates-container .alert ul {
+    font-size: 0.875rem; /* Ukuran font list di dalam alert */
+}
+
+.recent-updates-container .update-section {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px dashed var(--ap-border-color);
+}
+.recent-updates-container .update-section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.recent-updates-container .update-section h6 {
+    font-size: 0.9rem;
+    font-weight: var(--ap-font-weight-semibold);
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+}
+.recent-updates-container .update-section h6 i {
+    margin-right: 0.5rem;
+    font-size: 0.95em;
+}
+
+/* Warna spesifik untuk ikon di judul section */
+.recent-updates-container .update-section h6.text-danger i {
+    color: var(--ap-danger);
+}
+.recent-updates-container .update-section h6.text-warning i {
+    color: var(--ap-warning);
+}
+
+.recent-updates-container .list-group-flush .list-group-item {
+    font-size: var(--ap-font-size-sm);
+    color: var(--ap-text-medium);
+    background-color: transparent;
+    border-color: rgba(var(--ap-text-dark-rgb), 0.1) !important;
+    padding: 0.4rem 0.25rem; /* Padding lebih rapat untuk list item */
+}
+
+.recent-updates-container .list-group-flush .list-group-item:last-child {
+    border-bottom: none !important;
+}
+
+/* Styling untuk link di dalam alert (jika ada, seperti di pesan "Silakan periksa halaman Anotasi") */
+.recent-updates-container .alert a.alert-link {
+    font-weight: var(--ap-font-weight-semibold);
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 2px;
+}
+.recent-updates-container .alert a.alert-link:hover {
+    text-decoration-style: solid;
+}
+
+.small-caps {
+    font-variant: small-caps;
+    font-weight: 600;
+}
+.list-group-sm .list-group-item {
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+    font-size: 0.85em;
+}
+.code-listing li {
+    font-family: monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.accordion-button.small.py-2::after {
+    font-size: 0.8rem;
+}
+
+/* Styling untuk Tab Pembaruan Terkini (recent-updates-tab) */
+.dataset-issue-item .card-header {
+    font-size: 0.8rem; /* Ukuran font header kartu isu lebih kecil */
+}
+.dataset-issue-item .card-img-top {
+    border-bottom: 1px solid var(--ap-border-color);
+}
+.dataset-issue-item .issue-details {
+    padding: 0.5rem 0.75rem; /* Padding untuk daftar isu */
+    font-size: 0.8rem; /* Font lebih kecil untuk detail isu */
+}
+.dataset-issue-item .issue-details li {
+    margin-bottom: 0.25rem;
+    display: flex; /* Untuk alignment ikon dan teks */
+    align-items: flex-start;
+}
+.dataset-issue-item .issue-details li i {
+    margin-right: 0.4rem;
+    margin-top: 0.15em; /* Sesuaikan alignment vertikal ikon */
+    width: 1em; /* Lebar tetap untuk ikon */
+}
+.dataset-issue-item .card-footer {
+    padding: 0.25rem 0.75rem; /* Padding footer kartu lebih kecil */
+}
+.dataset-issue-item .btn-sm.py-0.px-1 {
+    /* Tombol anotasi kecil */
+    font-size: 0.7rem;
+}
+
+/* Penyesuaian untuk Sub-Tab "Kesimpulan & Analisis" di dalam "Evaluasi Performa Model" */
+#analysis-subtab-pane .analysis-summary-container {
+    /* Jika perlu padding spesifik saat menjadi sub-tab */
+    padding-top: 0.5rem; /* Contoh, sesuaikan */
+}
+
+#analysis-subtab-pane .analysis-card .card-header,
+#analysis-subtab-pane .training-info-card .card-header {
+    /* Mungkin ingin header sub-tab konten sedikit lebih kecil */
+    padding: 0.75rem 1.25rem;
+}
+#analysis-subtab-pane .analysis-card .card-header h5,
+#analysis-subtab-pane .training-info-card .card-header h6 {
+    font-size: 0.95rem;
+}
+
+bg-primary-gradient {
+    background: linear-gradient(
+        135deg,
+        var(--ap-primary) 0%,
+        var(--ap-primary-dark, #2563eb) 100%
+    ) !important;
+    /* Ganti --ap-primary-dark dengan warna yang sesuai jika ada di variabel Anda */
+}
+
+/* ==========================================================================
+   9. Styling Alert & Notifikasi
+   ========================================================================== */
+.alert {
+    border-radius: var(--ap-border-radius-md);
+    font-size: var(--ap-font-size-base);
+    padding: 1rem 1.25rem;
+}
+.alert .alert-heading {
+    font-weight: var(--ap-font-weight-semibold);
+}
+/* Alert di dalam #dataset-analysis-display (Analisis Kualitas) */
+#dataset-analysis-display .alert {
+    font-size: var(--ap-font-size-sm);
+    padding: 0.8rem 1rem;
+    border-left-width: 4px;
+}
+#dataset-analysis-display .alert .alert-heading {
+    font-size: 0.9rem;
+}
+#dataset-analysis-display .alert ul {
+    padding-left: 1.2rem;
+    font-size: 0.9em;
+}
+
+/* ==========================================================================
+   10. Responsivitas Tambahan
+   ========================================================================== */
+@media (max-width: 767px) {
+    /* Tablet ke bawah */
+    .page-header .page-title {
+        font-size: 1.6rem;
+    }
+    .main-tabs .nav-link {
+        font-size: 0.9rem;
+        padding: 0.7rem 1rem;
+    }
+    .sub-tabs .nav-link {
+        font-size: 0.85rem;
+        padding: 0.6rem 0.9rem;
+    }
+    .model-sub-sub-tabs .nav-link {
+        font-size: 0.75rem;
+        padding: 0.35rem 0.7rem;
+    }
+
+    .individual-model-card .card-body,
+    .model-section {
+        padding: 1rem;
+    }
+    .metric-overall .metric-value {
+        font-size: 1.7rem;
+    }
+    .stat-card .stat-value {
+        font-size: 1.5rem;
+    }
+
+    /* Susun kolom di validasi/tes menjadi satu kolom */
+    .validation-performance-section .row > [class*="col-"],
+    .test-performance-section .row > [class*="col-"] {
+        flex-basis: 100%;
+        max-width: 100%;
+    }
+    .validation-performance-section .metric-chart-container,
+    .test-performance-section .metric-chart-container {
+        margin-top: 1.5rem; /* Jarak jika grafik di bawah metrik */
+    }
+}
+
+@media (max-width: 575px) {
+    /* Mobile */
+    .dashboard-container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    .page-header .page-title {
+        font-size: 1.4rem;
+    }
+    .page-actions .btn {
+        padding: 0.4rem 0.7rem;
+    }
+    .main-tabs .nav-link {
+        padding: 0.6rem 0.8rem;
+    }
+
+    /* Tabel bisa di-scroll horizontal */
+    .table-responsive-sm-custom {
+        /* Buat kelas kustom jika perlu */
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .cm-table,
+    .comparison-table {
+        /* Terapkan pada tabel yang mungkin lebar */
+        white-space: nowrap; /* Cegah wrap, biarkan scroll */
+    }
+}
