@@ -1,63 +1,106 @@
-# Gunakan base image PHP-FPM resmi
-FROM php:8.2-fpm-alpine
+# --- Stage 1: Base PHP with Dependencies ---
+FROM php:8.2-fpm AS base
 
 # Set working directory
-WORKDIR /var/www/html
+WORKDIR /var/www
 
-# Instal dependensi sistem untuk ekstensi PHP dan Python
-# Alpine Linux menggunakan apk
-RUN apk add --no-cache \
-    # Untuk PHP extensions
-    $PHPIZE_DEPS \ # build-base, autoconf, dll.
-    libzip-dev \
+# Install system dependencies
+# - Git, curl, zip, unzip: Common tools for development and composer.
+# - libpng-dev, libxml2-dev, libzip-dev: For PHP extensions.
+# - libmagickwand-dev: For Imagick PHP extension.
+# - python3, python3-pip: To run Python scripts.
+# - libgl1-mesa-glx: Runtime dependency for OpenCV.
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
     libpng-dev \
-    libjpeg-dev \
-    libwebp-dev \
-    freetype-dev \
-    imagemagick-dev \
-    # Untuk Python dan OpenCV (ini bagian yang mungkin rumit di Alpine)
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    libzip-dev \
+    libmagickwand-dev --no-install-recommends \
     python3 \
-    py3-pip \
-    # Dependensi OpenCV mungkin perlu: build-base, cmake, linux-headers,
-    # libjpeg-turbo-dev, libpng-dev, tiff-dev, jasper-dev, libxrender-dev, etc.
-    # Untuk kemudahan, pertimbangkan base image yang sudah ada OpenCV atau gunakan Debian base untuk PHP.
-    # Untuk Alpine, instalasi OpenCV dari source atau wheel yang kompatibel bisa sulit.
-    # Jika OpenCV sulit di Alpine, ganti base image PHP ke php:8.2-fpm (Debian based).
-    # Jika menggunakan Debian base:
-    # apt-get update && apt-get install -y --no-install-recommends \
-    #   git unzip zip libzip-dev libpng-dev libjpeg-dev libwebp-dev libfreetype6-dev \
-    #   libmagickwand-dev python3 python3-pip python3-opencv \
-    #   && rm -rf /var/lib/apt/lists/* \
-    #   && pip3 install --no-cache-dir numpy # Jika python3-opencv tidak otomatis instal numpy
+    python3-pip \
+    libgl1-mesa-glx \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-    # Untuk Alpine (jika ingin tetap dengan Alpine, instalasi OpenCV lebih manual):
-    # Ini contoh, mungkin perlu penyesuaian besar untuk OpenCV di Alpine
-    build-base python3-dev py3-numpy-dev py3-pillow \
-    && pip3 install --no-cache-dir numpy opencv-python \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
-    && docker-php-ext-install -j$(nproc) gd zip pdo pdo_mysql bcmath exif pcntl sockets intl \
-    && pecl install imagick redis \
-    && docker-php-ext-enable imagick redis \
-    && apk del $PHPIZE_DEPS # Hapus build dependencies
+# Install PHP extensions
+# - pdo_mysql: For database connection (assuming MySQL/MariaDB). Ganti jika Anda pakai DB lain.
+# - mbstring, exif, bcmath, gd, zip: Common Laravel/PHP extensions.
+# - fileinfo: Required by composer.json.
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip fileinfo
 
-# Copy composer files dan instal dependensi PHP
-COPY composer.json composer.lock ./
-RUN composer install --optimize-autoloader --no-dev --no-scripts --no-plugins
+# Install Imagick PHP extension
+RUN pecl install imagick && docker-php-ext-enable imagick
 
-# Copy file aplikasi (termasuk skrip Python Anda di scripts/)
+# Install Composer (PHP package manager)
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# --- Stage 2: Build PHP Dependencies ---
+FROM base AS vendor
+
+# Copy composer files
+COPY composer.json composer.lock* ./
+
+# Install Composer dependencies (only production)
+# --no-interaction: Prevents asking questions.
+# --optimize-autoloader: Creates an optimized autoloader.
+# --no-dev: Skips development dependencies.
+RUN composer install --no-interaction --optimize-autoloader --no-dev
+
+# --- Stage 3: Build Python Dependencies ---
+FROM base AS python_deps
+
+# Copy Python requirements file
+COPY requirements.txt ./
+
+# Install Python dependencies
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+# --- Stage 4: Final Application Image ---
+FROM php:8.2-fpm
+
+WORKDIR /var/www
+
+# Install essential system dependencies (needed at runtime)
+RUN apt-get update && apt-get install -y \
+    libmagickwand-dev \
+    python3 \
+    libgl1-mesa-glx \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install PHP extensions (same as base, needed at runtime)
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip fileinfo
+RUN pecl install imagick && docker-php-ext-enable imagick
+
+# Copy application code
 COPY . .
 
-# Copy requirements.txt dan instal dependensi Python (jika belum di atas)
-COPY scripts/requirements.txt /tmp/requirements.txt
-RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
+# Copy installed vendor dependencies from the 'vendor' stage
+COPY --from=vendor /var/www/vendor ./vendor
 
-# Jalankan build aset frontend
-RUN npm install && npm run build
+# Copy installed Python dependencies from the 'python_deps' stage
+# We need to find where pip installs packages and copy them.
+# Usually /usr/local/lib/python3.x/site-packages/
+# Let's assume Python 3.10 or higher (common with PHP 8.2 base images)
+# You might need to adjust this path based on the actual Python version in the base image.
+COPY --from=python_deps /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
 
-# Atur permission untuk Laravel
-RUN chown -R www-data:www-data storage bootstrap/cache \
-    && chmod -R 775 storage bootstrap/cache
+# Copy composer binary (optional, but can be useful)
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Expose port PHP-FPM (Koyeb akan menggunakan ini)
+# Set permissions for Laravel storage and cache
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+
+# Run Laravel post-install scripts (if any)
+# RUN composer run-script post-autoload-dump # Uncomment if needed
+# RUN php artisan key:generate --force # Be careful with this in production
+RUN php artisan config:cache
+RUN php artisan route:cache
+RUN php artisan view:cache
+
+# Expose port 9000 and start php-fpm server
 EXPOSE 9000
 CMD ["php-fpm"]
