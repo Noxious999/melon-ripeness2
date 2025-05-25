@@ -64,7 +64,7 @@ COPY requirements.txt ./
 # Install Python dependencies
 # Jika ini gagal dengan exit code 1, periksa log untuk detail error spesifik.
 # Kemungkinan masih ada library sistem yang kurang.
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
 
 # --- Stage 4: Final Application Image ---
 # Gunakan 'base' sebagai dasar, sehingga tidak perlu install ulang dependensi & ekstensi
@@ -92,6 +92,7 @@ RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 RUN php artisan config:cache
 RUN php artisan route:cache
 RUN php artisan view:cache
+RUN php artisan events:cache
 
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
