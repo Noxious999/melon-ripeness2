@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+    # PHP-FPM Service
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: melon_app
+        restart: unless-stopped
+        working_dir: /var/www/
+        volumes:
+            - ./:/var/www
+        networks:
+            - melon_network
+
+    # Nginx Service
+    nginx:
+        image: nginx:alpine
+        container_name: melon_nginx
+        restart: unless-stopped
+        ports:
+            - "8000:80" # Map port 8000 di host ke port 80 di container
+        volumes:
+            - ./:/var/www
+            - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+        networks:
+            - melon_network
+
+    # Database Service (Contoh MySQL)
+    # db:
+    #   image: mysql:8.0
+    #   container_name: melon_db
+    #   restart: unless-stopped
+    #   environment:
+    #     MYSQL_DATABASE: laravel_db
+    #     MYSQL_ROOT_PASSWORD: root_password
+    #     MYSQL_PASSWORD: user_password
+    #     MYSQL_USER: db_user
+    #   volumes:
+    #     - ./docker/mysql_data:/var/lib/mysql
+    #   networks:
+    #     - melon_network
+
+networks:
+    melon_network:
+        driver: bridge
