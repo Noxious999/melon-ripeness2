@@ -5,6 +5,7 @@ FROM php:8.2-fpm AS base
 WORKDIR /var/www
 
 # Install system dependencies
+# Menambahkan build-essential, cmake, dan python3-dev untuk kompilasi paket Python
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -14,10 +15,14 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     libzip-dev \
-    libmagickwand-dev --no-install-recommends \
+    libmagickwand-dev \
     python3 \
     python3-pip \
     libgl1-mesa-glx \
+    build-essential \
+    cmake \
+    python3-dev \
+    --no-install-recommends \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
@@ -36,7 +41,8 @@ FROM base AS vendor
 COPY composer.json composer.lock* ./
 
 # Install Composer dependencies (only production)
-RUN composer install --no-interaction --optimize-autoloader --no-dev
+# Coba tambahkan --prefer-dist untuk mengurangi penggunaan memori jika memungkinkan
+RUN composer install --no-interaction --optimize-autoloader --no-dev --prefer-dist
 
 # --- Stage 3: Build Python Dependencies ---
 FROM base AS python_deps
@@ -61,16 +67,15 @@ COPY --from=vendor /var/www/vendor ./vendor
 
 # Copy installed Python dependencies from the 'python_deps' stage
 # Sesuaikan jalur Python jika diperlukan (cek versi Python di image 'base')
+# Untuk php:8.2-fpm, versi python3 biasanya python3.11 (Debian Bookworm)
 COPY --from=python_deps /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=python_deps /usr/local/bin /usr/local/bin
 
 # Set permissions for Laravel storage and cache
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
 # Run Laravel post-install scripts & optimizations
-# Pastikan Composer ada jika menjalankan script composer
-# COPY --from=composer:latest /usr/bin/composer /usr/bin/composer # Uncomment jika butuh composer di final
-# RUN composer run-script post-autoload-dump # Uncomment jika diperlukan
 RUN php artisan config:cache
 RUN php artisan route:cache
 RUN php artisan view:cache
